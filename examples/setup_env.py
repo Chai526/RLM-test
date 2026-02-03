@@ -26,10 +26,10 @@ def setup_env():
     print()
 
     # OpenAI
-    openai_key = input("OpenAI API Key (required): ").strip()
-    if not openai_key:
-        print("❌ OpenAI API key is required!")
-        return
+    # openai_key = input("OpenAI API Key (required): ").strip()
+    # if not openai_key:
+    #     print("❌ OpenAI API key is required!")
+    #     return
 
     # Optional keys
     anthropic_key = input("Anthropic API Key (optional): ").strip()
@@ -38,11 +38,11 @@ def setup_env():
     if azure_key:
         azure_base = input("Azure API Base URL: ").strip()
 
-    # Write .env file
+    # # Write .env file
     with open(env_file, 'w') as f:
-        f.write("# OpenAI API Key\n")
-        f.write(f"OPENAI_API_KEY={openai_key}\n")
-        f.write("\n")
+    #     f.write("# OpenAI API Key\n")
+    #     f.write(f"OPENAI_API_KEY={openai_key}\n")
+    #     f.write("\n")
 
         if anthropic_key:
             f.write("# Anthropic API Key\n")
@@ -90,6 +90,7 @@ def test_env():
     print()
 
     openai_key = os.getenv("OPENAI_API_KEY")
+    azure_key = os.getenv("AZURE_API_KEY")
     anthropic_key = os.getenv("ANTHROPIC_API_KEY")
 
     if openai_key:
@@ -97,6 +98,13 @@ def test_env():
         print(f"✅ OPENAI_API_KEY: {masked}")
     else:
         print("❌ OPENAI_API_KEY: Not set")
+
+    if azure_key:
+        masked = azure_key[:7] + "..." + azure_key[-4:] if len(azure_key) > 11 else "***"
+        print(f"✅ AZURE_API_KEY: {masked}")
+    else:
+        print("⚠️  AZURE_API_KEY: Not set (optional)")
+
 
     if anthropic_key:
         masked = anthropic_key[:7] + "..." + anthropic_key[-4:] if len(anthropic_key) > 11 else "***"

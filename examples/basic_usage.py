@@ -44,11 +44,18 @@ and countless other domains. The future promises even more exciting developments
 
 def main():
     """Run basic RLM example."""
-    # Initialize RLM with OpenAI (or any other provider)
-    # You can also use "claude-sonnet-4", "ollama/llama3.2", etc.
+    # Determine API key (support OPENAI_API_KEY or AZURE_API_KEY)
+    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("AZURE_API_KEY")
+    if not api_key:
+        print("❌ Error: OPENAI_API_KEY or AZURE_API_KEY not found!")
+        print("Please set your provider API key in your environment or .env file.")
+        exit(1)
+
+    # Initialize RLM with API key (works with LiteLLM providers)
     rlm = RLM(
-        model="gpt-5-mini",  # Use mini for cheaper testing
+        model="gpt-4.1-mini",  # Use mini for cheaper testing
         max_iterations=15,
+        api_key=api_key,
         # temperature=0.7,  # Optional: not all models support this (e.g., gpt-5 only allows temperature=1)
     )
 
@@ -77,13 +84,15 @@ if __name__ == "__main__":
     # Make sure to set your API key in .env file or as environment variable:
     # OPENAI_API_KEY=sk-...
 
-    if not os.getenv("OPENAI_API_KEY"):
-        print("❌ Error: OPENAI_API_KEY not found!")
-        print()
-        print("Please set up your API key:")
-        print("  1. Copy .env.example to .env")
-        print("  2. Add your OpenAI API key to .env")
-        print("  3. Or run: python setup_env.py")
-        exit(1)
+    # if not os.getenv("OPENAI_API_KEY"):
+    #     print("❌ Error: OPENAI_API_KEY not found!")
+    #     print()
+    #     print("Please set up your API key:")
+    #     print("  1. Copy .env.example to .env")
+    #     print("  2. Add your OpenAI API key to .env")
+    #     print("  3. Or run: python setup_env.py")
+    #     exit(1)
+
+    # Note: API key check is done in main(); run the example normally.
 
     main()

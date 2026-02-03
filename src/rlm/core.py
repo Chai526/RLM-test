@@ -1,6 +1,7 @@
 """Core RLM implementation."""
 
 import asyncio
+import os
 import re
 from typing import Optional, Dict, Any, List
 
@@ -56,8 +57,18 @@ class RLM:
         """
         self.model = model
         self.recursive_model = recursive_model or model
-        self.api_base = api_base
-        self.api_key = api_key
+        # Prefer explicit args, then Azure env vars, then OpenAI env var
+        resolved_api_base = api_base or os.getenv("AZURE_API_BASE") or os.getenv("API_BASE")
+        resolved_api_key = api_key or os.getenv("AZURE_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+        self.api_base = resolved_api_base
+        self.api_key = resolved_api_key
+        # Detect if Azure should be used
+        self._prefer_azure = bool(
+            api_key and os.getenv("AZURE_API_KEY") or (
+                resolved_api_base and "azure" in resolved_api_base
+            )
+        )
         self.max_depth = max_depth
         self.max_iterations = max_iterations
         self._current_depth = _current_depth
@@ -209,6 +220,9 @@ class RLM:
             call_kwargs['api_base'] = self.api_base
         if self.api_key:
             call_kwargs['api_key'] = self.api_key
+        # If Azure config detected, tell LiteLLM to use the azure provider
+        if self._prefer_azure:
+            call_kwargs['custom_llm_provider'] = 'azure'
 
         # Call LiteLLM
         response = await litellm.acompletion(
