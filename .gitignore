@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -141,3 +142,6 @@ docs/
 
 # Local tests
 local_tests/
+=======
+.env
+>>>>>>> 1c6f63e0b78682d1b21266d9d241a1d206b0a0b6
